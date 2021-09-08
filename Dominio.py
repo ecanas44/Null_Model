@@ -77,3 +77,11 @@ class Dominio:
               if (a!=0 or b!=0) and i+a>=0 and i+a<self.dimensiones[0] and j+b>=0 and j+b<self.dimensiones[1]:
                   vecinos.append(self.grid[i+a][j+b])
         return vecinos
+    
+    def count_values(self):
+        empty = np.count_nonzero(self.print_grid == 5)
+        sp1 = np.count_nonzero(self.print_grid == 15)
+        sp2 = np.count_nonzero(self.print_grid == 25)
+        sp3 = np.count_nonzero(self.print_grid == 35)
+        return empty, sp1, sp2, sp3
+        

@@ -14,6 +14,7 @@ Created on Tue Jun  2 23:06:25 2020
 #r3 = capacidad fotosintetica
 #r4 = longevidad
 
+import random
 
 class Celda:
     def __init__(self, posicion):
@@ -24,23 +25,23 @@ class Celda:
         if estado == 'especie1':
             self._rasgos = {
                 'densidad': 1, 
-                'rango_dispersion': 5,
+                'rango_dispersion': random.randint(1,5),
                 'capacidad_fotosintetica': 3,
-                'longevidad': 10
+                'longevidad': random.randint(1,12)
                 }
         elif estado == 'especie2':
             self._rasgos = {
                 'densidad': 1, 
-                'rango_dispersion': 5,
+                'rango_dispersion': random.randint(1,5),
                 'capacidad_fotosintetica': 3,
-                'longevidad': 10
+                'longevidad': random.randint(1,12)
                 }
         elif estado == 'especie3':
             self._rasgos = {
                 'densidad': 1, 
-                'rango_dispersion': 5,
+                'rango_dispersion': random.randint(1,5),
                 'capacidad_fotosintetica': 3,
-                'longevidad': 10
+                'longevidad': random.randint(1,12)
                 }
         elif estado == 'vacia':
           self._rasgos = {

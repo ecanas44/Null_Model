@@ -5,8 +5,9 @@ Created on Sat Jul 13 13:59:23 2019
 @author: esteban
 """
 #AUTOMATA CELULAR: TIEMPO DISCRETO, ESPACIO DISCRETO, ESTADOS DISCRETOS
-import numpy as np
+import os
 import matplotlib.pyplot as plt
+import imageio
 from matplotlib import colors
 from Dominio import Dominio
 from Celda import Celda
@@ -90,11 +91,19 @@ class Automata:
         self._dominio.set_celda(-4, -4, 'especie3')
         
     def simular(self):
+        filenames = []
+        count_empty = []
+        count_sp1 = []
+        count_sp2 = []
+        count_sp3 = []
         cmap = colors.ListedColormap(['white', 'purple', 'blue', 'green'])
         bounds = [0,10,20,30,40]
         norm = colors.BoundaryNorm(bounds, cmap.N)
         plt.title('t = 0')
         plt.imshow(self.dominio.print_grid, cmap, norm)
+        filename = 't0.png'
+        filenames.append(filename)
+        plt.savefig(filename)
         plt.pause(0.5)
         
         while self._tiempo <= self._dominio.tiempo_total:
@@ -103,27 +112,49 @@ class Automata:
             self.regla.propagacion(self.dominio)
             plt.title(f't = {self._tiempo}')
             plt.imshow(self.dominio.print_grid, cmap, norm)
+            filename = f't{self._tiempo}.png'
+            
+            # last frame of each viz stays longer
+            if (self._tiempo == self._dominio.tiempo_total):
+                for i in range(15):
+                    filenames.append(filename)
+            else:
+                for i in range(3):
+                    filenames.append(filename)
+            
+            empty, sp1, sp2, sp3 = self.dominio.count_values()
+            
+            count_empty.append(empty)
+            count_sp1.append(sp1)
+            count_sp2.append(sp2)
+            count_sp3.append(sp3)
+            
+            plt.savefig(filename)
             plt.pause(0.5)
+            
+        # build gif
+        with imageio.get_writer('simulacion.gif', mode='I') as writer:
+            for filename in filenames:
+                image = imageio.imread(filename)
+                writer.append_data(image)
+                
+        # Remove files
+        for filename in set(filenames):
+            os.remove(filename)
+            
+        time = [i  for i in range(0,51)]
+        plt.plot(time, count_empty, label='empty')
+        plt.plot(time, count_sp1, label='sp1')
+        plt.plot(time, count_sp2, label='sp2')
+        plt.plot(time, count_sp3, label='sp3')
+        plt.xlabel('time step')
+        plt.ylabel('count')
+        plt.title('Count of states per time step')
+        plt.legend()
+        plt.show()
+            
+        plt.close()
     
-#%%
-#CODIGO PARA CUADRICULA DE COLORES ESPECIFICOS
-data = np.random.rand(10, 10) * 30
-
-# create discrete colormap
-cmap = colors.ListedColormap(['red', 'blue', 'white'])
-bounds = [0,10,20,30]
-norm = colors.BoundaryNorm(bounds, cmap.N)
-
-fig, ax = plt.subplots()
-ax.imshow(data, cmap=cmap, norm=norm)
-
-# draw gridlines
-ax.grid(which='major', axis='both', linestyle='-', color='k', linewidth=2)
-ax.set_xticks(np.arange(-.5, 10, 1));
-ax.set_yticks(np.arange(-.5, 10, 1));
-
-plt.show()
-
 #%%
 # =============================================================================
 # PARA CORRER EL AUTOMATA
